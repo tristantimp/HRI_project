@@ -4,6 +4,7 @@ from autobahn.twisted.util import sleep
 import openai
 from alpha_mini_rug.speech_to_text import SpeechToText 
 import os
+from memory_game import play_memory_game
 
 audio_processor = SpeechToText() # create an instance of the class  # changing these values might not be necessary 
 audio_processor.silence_time = 0.5 # parameter set to indicate when to stop recording 
@@ -31,6 +32,9 @@ def main(session, details):
 
     yield session.call("rom.optional.behavior.play", name="BlocklyStand")
     yield session.call("rie.dialogue.say_animated", text="Hello there!")
+
+    yield play_memory_game(session)
+
     yield session.call("rom.sensor.hearing.sensitivity", 1650)   
     yield session.call("rie.dialogue.config.language", lang="en")  
     print("listening to audio")  
