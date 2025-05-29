@@ -1,0 +1,6 @@
+"The conversation has ended, evaluate the person you spoke to based on the following criteria: 
+1. Inattention: Does the patient have difficulty in focusing attention (for example, is he or she easily distracted) or in keeping track of what is being said?
+2. Disorganised thinking: Is the patient’s speech disorganised or incoherent, such as rambling or irrelevant conversation, unclear or illogical 
+flow of ideas, or unpredictable switching from subject to subject?
+3. Altered level of consciousness: Overall, how would you rate this patient’s level of consciousness? Alert (normal), vigilant (hyperalert),
+lethargic (drowsy, easily aroused), stupor (difficult to arouse), coma (unarousable). Any rating other than “alert” is scored as abnormal."

@@ -15,7 +15,7 @@ audio_processor.logging = False # set to true if you want to see all the output
 openai.api_key = os.environ["OPENAI_API_KEY"]
 
 def request_to_chatgpt(prompt, history):
-    with open("prompt.txt", "r") as file:
+    with open("initial_prompt.txt", "r") as file:
         content = file.read()
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo", 
@@ -63,11 +63,9 @@ def main(session, details):
                 yield sleep(2)
                 yield session.call("rie.dialogue.say_animated", text="Bye bye, see you next time")
                 yield session.call("rom.optional.behavior.play", name="BlocklyWaveRightArm")
-                cog_answer = request_to_chatgpt("The conversation has ended, evaluate the person you spoke to based on the following criteria: 1 Inattention"
-                    "Does the patient have difficulty in focusing attention (for example, is he or she easily distracted) or in keeping track of what is being said?"
-                    "2 Disorganised thinking Is the patient’s speech disorganised or incoherent, such as rambling or irrelevant conversation, unclear or illogical flow of ideas, or unpredictable switching from subject to subject?"
-                    "3 Altered level of consciousness Overall, how would you rate this patient’s level of consciousness? Alert (normal), vigilant (hyperalert), lethargic (drowsy, easily aroused), stupor (difficult to arouse), "
-                    "coma (unarousable). Any rating other than “alert” is scored as abnormal.", history)
+                with open("cog_prompt.txt", "r") as file:
+                    cog_content = file.read()
+                cog_answer = request_to_chatgpt(cog_content, history)
                 with open("cog_evaluation.txt", "w") as file:
                     file.write(cog_answer)
                 #yield session.call("rie.dialogue.say_animated", text=cog_answer)
