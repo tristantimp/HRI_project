@@ -1,5 +1,7 @@
 import random
 from twisted.internet.defer import inlineCallbacks
+from autobahn.twisted.util import sleep
+
 
 categories = {
     "numbers": ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"],
@@ -23,8 +25,11 @@ def play_memory_game(session):
 
     category = None
     while category not in categories:
+        yield sleep(2)
         aruco_response = yield session.call("rie.vision.card.read", time=0)
+        print("Aruco response:", aruco_response)
         detected_category = aruco_response[-1]['data']['body'][-1][-1]
+        aruco_response = None
         for cat, number in category_cards.items():
             if detected_category == number:
                 category = cat
@@ -39,20 +44,28 @@ def play_memory_game(session):
     score = 0
 
     while True:
-        sequence.append(random.randint(1, 10))
+        sequence = [random.randint(1, 10) for _ in range(score + 1)]
+        print("Generated sequence:", sequence)
         item_names = [items[i-1] for i in sequence]
 
         yield session.call("rie.dialogue.say", text=f"Listen carefully. The sequence is: {' '.join(item_names)}")
         yield session.call("rie.dialogue.say", text=f"Please show me the cards in the same order.")
+        yield sleep(2)
 
         for i in range(len(sequence)):
-            aruco_response = yield session.call("rie.vision.card.read", time=0)
-            detected = aruco_response[-1]['data']['body'][-1][-1]
+            correct = False
+            while not correct:
+                yield sleep(5)
+                aruco_response_2 = yield session.call("rie.vision.card.read", time=0)
+                detected = aruco_response_2[-1]['data']['body'][-1][-1]
+                print("Detected:", detected, "Expected:", sequence[i])
 
-            if detected != sequence[i]:
-                yield session.call("rie.dialogue.say", text=f"Oops, that was incorrect. The correct answer was card {sequence[i]} ({item_names[i]}).")
-                yield session.call("rie.dialogue.say", text=f"Your final score is {score}.")
-                return score
+                if detected == sequence[i]:
+                    correct = True
+                else:
+                    yield session.call("rie.dialogue.say", text="That card is incorrect.")
+                    yield session.call("rie.dialogue.say", text=f"Your final score is {score}.")
+                    return score
 
         score += 1
         yield session.call("rie.dialogue.say", text=f"Well done! Your current score is {score}.")

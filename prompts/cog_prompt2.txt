@@ -1,0 +1,4 @@
+"
+Respond with a single number only.
+Rate the cognitive ability of the user based off the following conversation history between 1 (bad) and 10 (good). 
+"
