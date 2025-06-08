@@ -37,7 +37,7 @@ def main(session, details):
     
             if word_array[-1][0] != "game time":
                 question = word_array[-1][0] 
-                answer = request_to_chatgpt(question, history)
+                answer = request_to_chatgpt(question, history, "prompts/initial_prompt.txt")
                 yield session.call("rie.dialogue.say_animated", text=answer)
                 yield sleep(2)
                 history += "Elderly response:" + word_array[-1][0] + " " + "GPT answer:" + answer
@@ -48,10 +48,8 @@ def main(session, details):
 
                 with open("prompts/cog_prompt2.txt", "r") as file:
                     cog_content = file.read()
-                cog_answer = request_to_chatgpt(cog_content, history)
+                cog_answer = request_to_chatgpt(cog_content, history, "prompts/initial_prompt.txt")
                 print(int(cog_answer))
-                #with open("prompts/cog_score.txt", "w") as file:
-                    #file.write(cog_answer)
                 
                 yield session.call("rie.dialogue.say_animated", text="Now, let's play a game!")
 
@@ -64,6 +62,7 @@ def main(session, details):
                 else:
                     yield play_word_chain_game(session, audio_processor)
 
+                yield session.call("rie.dialogue.say_animated", text="I hope you enjoyed the game!")
                 x=False
 
         audio_processor.loop()  

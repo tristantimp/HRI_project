@@ -4,8 +4,8 @@ import openai
 openai.api_key = os.environ["OPENAI_API_KEY"]
 
 
-def request_to_chatgpt(prompt, history):
-    with open("prompts/initial_prompt.txt", "r") as file:
+def request_to_chatgpt(prompt, history, system_path):
+    with open(system_path, "r") as file:
         content = file.read()
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo", 
