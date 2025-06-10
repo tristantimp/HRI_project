@@ -22,22 +22,19 @@ def get_user_response(session, audio_processor, start_time):
 
 @inlineCallbacks
 def play_stroop_test_game(session, audio_processor):
-    yield session.call("rie.dialogue.say", text="We're going to play a focus game together!")
+    #yield session.call("rie.dialogue.say", text="We're going to play a focus game together!")
     yield session.call("rie.dialogue.say", text="When I raise this arm") 
     yield session.call("rom.optional.behavior.play", name="BlocklyRightArmUp")
-    #yield session.call("rom.optional.behavior.play", name="BlocklyStand")
     yield session.call("rie.dialogue.say", text="you say 'left'.")
 
     yield session.call("rie.dialogue.say", text="And when I raise this arm")
     yield session.call("rom.optional.behavior.play", name="BlocklyLeftArmUp")
-    #yield session.call("rom.optional.behavior.play", name="BlocklyStand")
     yield session.call("rie.dialogue.say", text="you say 'right'.")
+    yield session.call("rie.dialogue.say_animated", text="Got it? Great! Let's begin")
 
-    yield session.call("rie.dialogue.say_animated", text="Got it? Great! Let's begin with a few practice rounds.")
 
-
-    total_congruent = 5
-    total_incongruent = 5
+    total_congruent = 1
+    total_incongruent = 1
     correct_congruent = 0
     correct_incongruent = 0
     rt_congruent = []
@@ -48,9 +45,9 @@ def play_stroop_test_game(session, audio_processor):
         side = random.choice(["left", "right"])
         motion = "BlocklyRightArmUp" if side == "left" else "BlocklyLeftArmUp"
 
-        yield session.call("rie.dialogue.say_animated", text=f"{side.capitalize()} arm")
-        yield session.call("rom.optional.behavior.play", name=motion)
-        yield session.call("rom.optional.behavior.play", name="BlocklyStand")
+        session.call("rom.optional.behavior.play", name=motion)
+        session.call("rie.dialogue.say_animated", text=f"{side.capitalize()}")
+        #yield session.call("rom.optional.behavior.play", name="BlocklyStand")
 
         t_start = time.time()
         user_response, rt = yield get_user_response(session, audio_processor, t_start)
@@ -75,9 +72,8 @@ def play_stroop_test_game(session, audio_processor):
         moved = "left" if said == "right" else "right"
         motion = "BlocklyRightArmUp" if moved == "left" else "BlocklyLeftArmUp"
 
-        yield session.call("rie.dialogue.say_animated", text=f"{said.capitalize()} arm")
-        yield session.call("rom.optional.behavior.play", name=motion)
-        yield session.call("rom.optional.behavior.play", name="BlocklyStand")
+        session.call("rom.optional.behavior.play", name=motion)
+        session.call("rie.dialogue.say_animated", text=f"{said.capitalize()}")
 
         t_start = time.time()
         user_response, rt = yield get_user_response(session, audio_processor, t_start)

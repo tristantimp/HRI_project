@@ -35,7 +35,7 @@ def main(session, details):
             print("I'm processing the words")          
             print(word_array[-3:])  # print last 3 sentences 
     
-            if word_array[-1][0] != "game time":
+            if word_array[-1][0] != "game":
                 question = word_array[-1][0] 
                 answer = request_to_chatgpt(question, history, "prompts/initial_prompt.txt")
                 yield session.call("rie.dialogue.say_animated", text=answer)
@@ -43,7 +43,7 @@ def main(session, details):
                 history += "Elderly response:" + word_array[-1][0] + " " + "GPT answer:" + answer
 
 
-            if word_array[-1][0] == "game time":
+            if word_array[-1][0] == "game":
                 yield sleep(2)
 
                 with open("prompts/cog_prompt2.txt", "r") as file:
@@ -75,7 +75,7 @@ wamp = Component(
         "serializers": ["msgpack"],
         "max_retries": 0
     }],
-    realm="rie.6842bf6d9827d41c07337c2b",
+    realm="rie.68481f6c9827d41c0733944b",
 )
 
 wamp.on_join(main)
