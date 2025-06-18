@@ -12,6 +12,15 @@ audio_processor.silence_time = 0.5 # parameter set to indicate when to stop reco
 audio_processor.silence_threshold2 = 120 # any sound recorded below this value is considered silence   
 audio_processor.logging = False # set to true if you want to see all the output 
 
+'''def get_user_response(session, audio_processor):
+    for _ in range(20):  # max 10s
+        audio_processor.loop()
+        if audio_processor.new_words:
+            heard = audio_processor.give_me_words()[-1][0].lower()
+            return heard
+        yield sleep(0.5)
+    return ""'''
+
 @inlineCallbacks
 def main(session, details):
     history = "None"
@@ -46,24 +55,39 @@ def main(session, details):
             if word_array[-1][0] == "game":
                 yield sleep(2)
 
-                with open("prompts/cog_prompt2.txt", "r") as file:
-                    cog_content = file.read()
-                cog_answer = request_to_chatgpt(cog_content, history, "prompts/initial_prompt.txt")
-                print(int(cog_answer))
-                
+                #while True:
+                with open("prompts/cog_prompt.txt", "r") as file:
+                        cog_content = file.read()
+                cog_level = request_to_chatgpt(cog_content, history, "prompts/initial_prompt.txt")
+                print(cog_level)
+
                 yield session.call("rie.dialogue.say_animated", text="Now, let's play a game!")
 
-                if int(cog_answer) >= 8:
-                    yield play_stroop_test_game(session, audio_processor)
-                
-                elif int(cog_answer) >= 6:
-                    yield play_digit_span_game(session, audio_processor)
-                
-                else:
-                    yield play_word_chain_game(session, audio_processor)
+                if cog_level == "vigilant":
+                        score = yield play_stroop_test_game(session, audio_processor)
 
+
+                elif cog_level == "lethargic":
+                        score = yield play_digit_span_game(session, audio_processor)
+                    
+                else:
+                        score = yield play_word_chain_game(session, audio_processor)
+
+                ''' yield session.call("rie.dialogue.say_animated", text="How did you like the game?")
+                    user_response = yield get_user_response(session, audio_processor)
+
+
+                    while True:
+                        if user_response != "stop":
+                            answer = request_to_chatgpt(user_response, history, f"prompts/adaptive_prompt.txt")
+                            yield session.call("rie.dialogue.say_animated", text=answer)
+                            yield sleep(2)
+                            history += "Elderly response:" + user_response + " " + "GPT answer:" + answer
+                        else:
+                            yield session.call("rie.dialogue.say_animated", text="Okay, stopping the game.")
+                            break'''
                 yield session.call("rie.dialogue.say_animated", text="I hope you enjoyed the game!")
-                x=False
+                #x=False
 
         audio_processor.loop()  
 

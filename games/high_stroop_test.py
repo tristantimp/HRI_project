@@ -22,7 +22,7 @@ def get_user_response(session, audio_processor, start_time):
 
 @inlineCallbacks
 def play_stroop_test_game(session, audio_processor):
-    #yield session.call("rie.dialogue.say", text="We're going to play a focus game together!")
+    yield session.call("rie.dialogue.say", text="We're going to play a focus game together!")
     yield session.call("rie.dialogue.say", text="When I raise this arm") 
     yield session.call("rom.optional.behavior.play", name="BlocklyRightArmUp")
     yield session.call("rie.dialogue.say", text="you say 'left'.")
@@ -34,7 +34,7 @@ def play_stroop_test_game(session, audio_processor):
 
 
     total_congruent = 1
-    total_incongruent = 1
+    total_incongruent = 2
     correct_congruent = 0
     correct_incongruent = 0
     rt_congruent = []
