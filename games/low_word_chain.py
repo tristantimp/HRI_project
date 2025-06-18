@@ -6,6 +6,7 @@ from autobahn.twisted.util import sleep
 used_words = []
 
 def generate_next_word(last_letter):
+    """Generate a new word for the word chain game based on the last letter."""
     prompt = (
         f"""
         You are playing a word chain game (Shiritori) with a user. 

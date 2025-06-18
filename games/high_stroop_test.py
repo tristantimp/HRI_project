@@ -47,7 +47,6 @@ def play_stroop_test_game(session, audio_processor):
 
         session.call("rom.optional.behavior.play", name=motion)
         session.call("rie.dialogue.say_animated", text=f"{side.capitalize()}")
-        #yield session.call("rom.optional.behavior.play", name="BlocklyStand")
 
         t_start = time.time()
         user_response, rt = yield get_user_response(session, audio_processor, t_start)

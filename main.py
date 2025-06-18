@@ -44,6 +44,7 @@ def main(session, details):
             print("I'm processing the words")          
             print(word_array[-3:])  # print last 3 sentences 
     
+            # introductory conversation
             if word_array[-1][0] != "game":
                 question = word_array[-1][0] 
                 answer = request_to_chatgpt(question, history, "prompts/initial_prompt.txt")
@@ -51,11 +52,11 @@ def main(session, details):
                 yield sleep(2)
                 history += "Elderly response:" + word_array[-1][0] + " " + "GPT answer:" + answer
 
-
+            # enter game mode
             if word_array[-1][0] == "game":
                 yield sleep(2)
 
-                #while True:
+                # determine cognitive level based on the initial conversation
                 with open("prompts/cog_prompt.txt", "r") as file:
                         cog_content = file.read()
                 cog_level = request_to_chatgpt(cog_content, history, "prompts/initial_prompt.txt")
@@ -63,6 +64,7 @@ def main(session, details):
 
                 yield session.call("rie.dialogue.say_animated", text="Now, let's play a game!")
 
+                # play the game based on cognitive level
                 if cog_level == "vigilant":
                         score = yield play_stroop_test_game(session, audio_processor)
 
